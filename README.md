@@ -1,6 +1,6 @@
 # sporz
 
-PHP implementation of the board game "sporz"
+PHP implementation of the board game [sporz](http://sporz.fr/)
 
 # Installation
 
