@@ -71,13 +71,13 @@ function refreshHUD(gameid, playerid){
 			current_player=player;
 		}
 	});
-	//$.getJSON({
-	//	url: "<?= $this->get('last-action-link'); ?>",
-	//	context: document.body,
-	//	success: function(action){
-	//		last_action=action;
-	//	}
-	//});
+	$.getJSON({
+		url: "<?= $this->get('last-action-link'); ?>",
+		context: document.body,
+		success: function(action){
+			last_action=action.result;
+		}
+	});
 	$.getJSON({
 		url: "<?= $this->get('turn-link'); ?>",
 		context: document.body,
@@ -118,7 +118,7 @@ function refreshHUD(gameid, playerid){
 	}
 }
 function checkLastAction(){
-	if(last_action.turn == current_turn && last_action.phase == current_phase && last_action.confirmed){
+	if(last_action != null && last_action.turn == current_turn && last_action.phase == current_phase && last_action.confirmed){
 		displayWaitMessage();
 	}else{
 		displayTargetForm();
