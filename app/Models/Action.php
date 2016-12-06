@@ -10,4 +10,8 @@ class Action extends \Pragma\ORM\Model
 		return parent::__construct('action');
 	}
 
+	public function jsonSerialize()
+	{
+		$this->fields;
+	}
 }
