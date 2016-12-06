@@ -241,6 +241,7 @@ $app->group('/game', function () use ($app) {
 				$view->assign('turn-link',  $app->url_for('game-turn', ['gameid' => $game->id]));
 				$view->assign('player-link',  $app->url_for('game-players-detail', ['gameid' => $game->id, 'playerid' => $player->id]));
 				$view->assign('dead-players-link',  $app->url_for('game-dead-players', ['gameid' => $game->id]));
+				$view->assign('last-action-link',  $app->url_for('game-last-action-by-current-player', ['gameid' => $game->id]));
 
 				$view->render('game/dashboard.tpl.php');
 			})->alias('game-dashboard');
@@ -255,6 +256,25 @@ $app->group('/game', function () use ($app) {
 
 				Output::json($game->getDeadPlayers());
 			})->alias('game-dead-players');
+			$app->get('/last-action', function ($gameId) use ($app, $userId) {
+				$game = new Game();
+				$game->open($gameId);
+
+				if ($game == null) {
+					View::getInstance()->flash('Inexistent game', 'danger');
+					Redirect::to($app->url_for('index'));
+				}
+
+				$player = new Player();
+				$player->open($userId);
+
+				if ($player == null) {
+					View::getInstance()->flash('Inexistent player', 'danger');
+					Redirect::to($app->url_for('index'));
+				}
+
+				Output::json($player->getLastAction());
+			})->alias('game-last-action-by-current-player');
 			$app->get('/turn', function ($gameId) use ($app, $userId) {
 				$game = new Game();
 				$game->open($gameId);
