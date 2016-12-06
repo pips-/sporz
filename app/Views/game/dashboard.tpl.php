@@ -132,10 +132,10 @@ function refreshDeadPlayers(){
 		url: "<?= $this->get('dead-players-link'); ?>",
 		context: document.body,
 		success: function(players){
-			if(players.length>$.('#dead_players_tab tr').length){
-				$.('#dead_players_tab tr').remove();
+			if(players.length > $('#dead_players_tab tr').length){
+				$('#dead_players_tab tr').remove();
 				players.forEach(function(p){
-					$.('#dead_players_tab thead').append('<tr><td>'+p.name+'</td><td>'+p.role'+</td><td>'+p.mutated'+</td></tr>');
+					$('#dead_players_tab thead').append('<tr><td>'+p.name+'</td><td>'+p.role+'</td><td>'+p.mutated+'</td></tr>');
 				});
 			}
 		}
