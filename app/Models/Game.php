@@ -175,4 +175,15 @@ class Game extends \Pragma\ORM\Model
 	{
 		return self::forge()->where('started', '=', 0)->get_objects();
 	}
+
+	public function getDeadPlayers()
+	{
+		$result=array();
+		foreach($this->players as $p){
+			if(!$p->alive){
+				$result[]=$p;
+			}
+		}
+		return $result;
+	}
 }
