@@ -39,6 +39,9 @@
 				</table>
 			</div>
 		</div>
+		<div class="col-sm-12 col-md-10">
+			<form id="target_form" style="display:none;"></form>
+		</div>
 	</div>
 </div>
 
@@ -55,6 +58,7 @@ var PHASE_NIGHT_GENETIC   = 6;
 var PHASE_NIGHT_IT   = 7;
 var PHASE_NIGHT_HACKER   = 8;
 
+var alive_players;
 var current_phase;
 var current_turn;
 var current_player;
@@ -128,6 +132,20 @@ function checkLastAction(){
 function displayWaitMessage(){
 }
 function displayTargetForm(){
+	var action_desc="cibler";
+	if(current_phase==PHASE_DAY_ELECT_LEADER){
+		action_desc="élire comme chef";
+	}
+	if($("#target_form").css("display")=="none"){
+		$('#target_form').empty();
+		$('#target_form').append("<p>Vous devez choisir quelqu'un à "+action_desc+".</p>");
+		$('#target_form').append('<select name="target_player" onChange="updateAction()"></select>');
+		for(var i=0;i<alive_players.length;i++){
+			$('#target_form select').append('<option value="'+alive_players[i].id+'">'+alive_players[i].name+'</option>');
+		}
+		$('#target_form').append('<button name="confirm_target" onClick="confirmAction()">Confirmer</button>');
+		$('#target_form').toggle();
+	}
 }
 function refreshDeadPlayers(){
 	$.getJSON({
@@ -154,6 +172,7 @@ function refreshDeadPlayers(){
 					$('#alive_players_tab tbody').append('<tr><td>'+players[i].name+'</td><td></td><td></td></tr>');
 				}
 			}
+			alive_players=players;
 		}
 	});
 }
