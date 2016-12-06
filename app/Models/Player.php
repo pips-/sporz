@@ -59,12 +59,25 @@ class Player extends \Pragma\ORM\Model implements \JsonSerializable
 
 	public function jsonSerialize()
 	{
-		return array_intersect_key($this->fields,
-			array_flip([
-				'id',
-				'name',
-				'alive',
-			])
-		);
+		if(!$this->alive){
+			return array_intersect_key($this->fields,
+				array_flip([
+					'id',
+					'name',
+					'alive',
+					'role',
+					'mutated',
+					'genome'
+				])
+			);
+		}else{
+			return array_intersect_key($this->fields,
+				array_flip([
+					'id',
+					'name',
+					'alive',
+				])
+			);
+		}
 	}
 }
