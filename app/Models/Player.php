@@ -80,4 +80,14 @@ class Player extends \Pragma\ORM\Model implements \JsonSerializable
 			);
 		}
 	}
+
+	public function getLastAction()
+	{
+		$action=null;
+		$actions = Action::forge()->where('player_id', '=', $this->id)->get_objects();
+		if(count($actions)>0){
+			$action=$actions[count($actions)-1];
+		}
+		return $action;
+	}
 }
