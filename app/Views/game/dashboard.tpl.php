@@ -35,6 +35,7 @@
 				<th>State</th>
 				</tr>
 				</thead>
+				<tbody></tbody>
 				</table>
 			</div>
 		</div>
@@ -138,6 +139,19 @@ function refreshDeadPlayers(){
 				$('#dead_players_tab tbody>tr').remove();
 				for(var i=0;i<players.length;i++){
 					$('#dead_players_tab tbody').append('<tr><td>'+players[i].name+'</td><td>'+players[i].role+'</td><td>'+players[i].mutated+'</td></tr>');
+				}
+			}
+		}
+	});
+	$.getJSON({
+		url: "<?= $this->get('alive-players-link'); ?>",
+		context: document.body,
+		success: function(result){
+			var players=result.result;
+			if(players.length != $('#alive_players_tab tbody>tr').length){
+				$('#alive_players_tab tbody>tr').remove();
+				for(var i=0;i<players.length;i++){
+					$('#alive_players_tab tbody').append('<tr><td>'+players[i].name+'</td><td></td><td></td></tr>');
 				}
 			}
 		}

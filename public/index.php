@@ -241,10 +241,22 @@ $app->group('/game', function () use ($app) {
 				$view->assign('turn-link',  $app->url_for('game-turn', ['gameid' => $game->id]));
 				$view->assign('player-link',  $app->url_for('game-players-detail', ['gameid' => $game->id, 'playerid' => $player->id]));
 				$view->assign('dead-players-link',  $app->url_for('game-dead-players', ['gameid' => $game->id]));
+				$view->assign('alive-players-link',  $app->url_for('game-alive-players', ['gameid' => $game->id]));
 				$view->assign('last-action-link',  $app->url_for('game-last-action-by-current-player', ['gameid' => $game->id]));
 
 				$view->render('game/dashboard.tpl.php');
 			})->alias('game-dashboard');
+			$app->get('/alive-players', function ($gameId) use ($app, $userId) {
+				$game = new Game();
+				$game->open($gameId);
+
+				if ($game == null) {
+					View::getInstance()->flash('Inexistent game', 'danger');
+					Redirect::to($app->url_for('index'));
+				}
+
+				Output::json($game->getAlivePlayers());
+			})->alias('game-alive-players');
 			$app->get('/dead-players', function ($gameId) use ($app, $userId) {
 				$game = new Game();
 				$game->open($gameId);
