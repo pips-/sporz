@@ -143,7 +143,7 @@ function displayTargetForm(){
 		for(var i=0;i<alive_players.length;i++){
 			$('#target_form select').append('<option value="'+alive_players[i].id+'">'+alive_players[i].name+'</option>');
 		}
-		$('#target_form').append('<button name="confirm_target" onClick="confirmAction()">Confirmer</button>');
+		$('#target_form').append('<button type="button" name="confirm_target" onClick="confirmAction()">Confirmer</button>');
 		$('#target_form').toggle();
 	}
 }
