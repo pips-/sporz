@@ -9,12 +9,12 @@ class Player extends \Pragma\ORM\Model implements \JsonSerializable
 	const GENOME_RESISTANT  = 2;
 
 	const ROLE_ASTRONAUT    = 0;
-	const ROLE_MEDIC        = 1;
-	const ROLE_PSYCHO       = 2;
-	const ROLE_GENETIC      = 3;
-	const ROLE_HACKER       = 4;
-	const ROLE_IT           = 5;
-	const ROLE_SPY          = 6;
+	const ROLE_MEDIC        = 4;
+	const ROLE_PSYCHO       = 5;
+	const ROLE_GENETIC      = 6;
+	const ROLE_HACKER       = 8;
+	const ROLE_IT           = 7;
+	const ROLE_SPY          = 9;
 
 	public function __construct()
 	{
@@ -84,9 +84,9 @@ class Player extends \Pragma\ORM\Model implements \JsonSerializable
 	public function getLastAction()
 	{
 		$action=null;
-		$actions = Action::forge()->where('player_id', '=', $this->id)->get_objects();
+		$actions = Action::forge()->where('player_id', '=', $this->id)->order('id','desc')->get_objects();
 		if(count($actions)>0){
-			$action=$actions[count($actions)-1];
+			$action=$actions[max(array_keys($actions))];
 		}
 		return $action;
 	}

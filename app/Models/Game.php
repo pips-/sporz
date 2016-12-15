@@ -197,4 +197,37 @@ class Game extends \Pragma\ORM\Model
 		}
 		return $result;
 	}
+
+	public function newAction($player, $target, $type=null)
+	{
+		if(!$player->alive || $player->paralysed || $player->role==ROLE_MEDIC && $player->mutated){
+			return;
+		}
+
+		$action_is_ok=0;
+
+		$last_action=$player->getLastAction();
+		if($last_action==null){
+			$action_is_ok=1;
+		}elseif($last_action->phase<$this->phase && $last_action->turn<$this->turn){
+			if($this->phase < 2 ||
+			$this->phase < 4 && $player->mutated ||
+			$this->phase == $player->role){
+				$action_is_ok=1;
+			}
+		}
+
+		if($action_is_ok){
+			$action=new Action();
+			$action->player_id=$player->id;
+			$action->target_id=$target->id;
+			$action->turn=$this->turn;
+			$action->phase=$this->phase;
+			if($type==null){
+				$type="";
+			}
+			$action->type_action=$type;
+			$action->save();
+		}
+	}
 }

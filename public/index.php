@@ -243,9 +243,71 @@ $app->group('/game', function () use ($app) {
 				$view->assign('dead-players-link',  $app->url_for('game-dead-players', ['gameid' => $game->id]));
 				$view->assign('alive-players-link',  $app->url_for('game-alive-players', ['gameid' => $game->id]));
 				$view->assign('last-action-link',  $app->url_for('game-last-action-by-current-player', ['gameid' => $game->id]));
+				$view->assign('update-action-link',  $app->url_for('action-update', ['gameid' => $game->id, 'playerid' => $player->id]));
+				$view->assign('confirm-action-link',  $app->url_for('action-confirm', ['gameid' => $game->id, 'playerid' => $player->id]));
 
 				$view->render('game/dashboard.tpl.php');
 			})->alias('game-dashboard');
+			$app->get('/action/confirm', function ($gameId) use ($app, $userId) {
+				$game = new Game();
+				$game->open($gameId);
+
+				if ($game == null) {
+					View::getInstance()->flash('Inexistent game', 'danger');
+					Redirect::to($app->url_for('index'));
+				}
+
+				$player = new Player();
+				$player->open($userId);
+
+				if ($player == null) {
+					View::getInstance()->flash('Inexistent player', 'danger');
+					Redirect::to($app->url_for('index'));
+				}
+				
+				$result=false;
+				$action=$player->getLastAction();
+				if($action!=null && !$action->confirmed){
+					$result=true;
+					$action->confirmed=1;
+					$action->save();
+					//$game->checkPhase();
+				}
+				Output::json($result);
+			})->alias('action-confirm');
+			$app->get('/action/update', function ($gameId) use ($app, $userId) {
+				$game = new Game();
+				$game->open($gameId);
+
+				if ($game == null) {
+					View::getInstance()->flash('Inexistent game', 'danger');
+					Redirect::to($app->url_for('index'));
+				}
+
+				$player = new Player();
+				$player->open($userId);
+
+				if ($player == null) {
+					View::getInstance()->flash('Inexistent player', 'danger');
+					Redirect::to($app->url_for('index'));
+				}
+
+				$target_id = filter_input(INPUT_GET, 'target',  FILTER_SANITIZE_STRING);
+				$type_action = filter_input(INPUT_GET, 'type',  FILTER_SANITIZE_STRING);
+				$target = new Player();
+				$target->open($target_id);
+				if ($target==null || !$target->alive) {
+					exit;
+				}
+
+				$action=$player->getLastAction();
+				if($action==null || $action->confirmed){
+					$game->newAction($player,$target,$type_action);
+				}else{
+					$action->target_id=$target_id;
+					$action->save();
+				}
+			})->alias('action-update');
 			$app->get('/alive-players', function ($gameId) use ($app, $userId) {
 				$game = new Game();
 				$game->open($gameId);
@@ -285,7 +347,8 @@ $app->group('/game', function () use ($app) {
 					Redirect::to($app->url_for('index'));
 				}
 
-				Output::json($player->getLastAction());
+				$action=$player->getLastAction();
+				Output::json($action);
 			})->alias('game-last-action-by-current-player');
 			$app->get('/turn', function ($gameId) use ($app, $userId) {
 				$game = new Game();

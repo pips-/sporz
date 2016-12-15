@@ -41,6 +41,7 @@
 		</div>
 		<div class="col-sm-12 col-md-10">
 			<form id="target_form" style="display:none;"></form>
+			<p id="wait_message" style="display:none;">Bois une bière en attendant ces connards…</p>
 		</div>
 	</div>
 </div>
@@ -123,23 +124,53 @@ function refreshHUD(gameid, playerid){
 	}
 }
 function checkLastAction(){
-	if(last_action != null && last_action.turn == current_turn && last_action.phase == current_phase && last_action.confirmed){
+	if(last_action != null && last_action.turn == current_turn && last_action.phase == current_phase && last_action.confirmed!='0'){
 		displayWaitMessage();
 	}else{
 		displayTargetForm();
 	}
 }
+function confirmAction(){
+	$.getJSON({
+		url: "<?= $this->get('confirm-action-link'); ?>",
+		context: document.body,
+		success: function(result){
+			if(result.result){
+				displayWaitMessage();
+			}else{
+				alert("Bien essayé mais non.");
+			}
+		}
+	});
+}
+function updateAction(){
+	$.getJSON({
+		url: "<?= $this->get('update-action-link'); ?>&target="+$('#target_player').val(),
+		context: document.body,
+		success: function(result){
+		}
+	});
+}
 function displayWaitMessage(){
+	if($("#target_form").css("display")!="none"){
+		$('#target_form').toggle();
+	}
+	if($("#wait_message").css("display")=="none"){
+		$('#wait_message').toggle();
+	}
 }
 function displayTargetForm(){
 	var action_desc="cibler";
 	if(current_phase==PHASE_DAY_ELECT_LEADER){
 		action_desc="élire comme chef";
 	}
+	if($("#wait_message").css("display")!="none"){
+		$("#wait_message").toggle();
+	}
 	if($("#target_form").css("display")=="none"){
 		$('#target_form').empty();
 		$('#target_form').append("<p>Vous devez choisir quelqu'un à "+action_desc+".</p>");
-		$('#target_form').append('<select name="target_player" onChange="updateAction()"></select>');
+		$('#target_form').append('<select id="target_player" onChange="updateAction()"></select>');
 		for(var i=0;i<alive_players.length;i++){
 			$('#target_form select').append('<option value="'+alive_players[i].id+'">'+alive_players[i].name+'</option>');
 		}

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Action extends \Pragma\ORM\Model
+class Action extends \Pragma\ORM\Model implements \JsonSerializable
 {
 
 	public function __construct()
@@ -12,6 +12,6 @@ class Action extends \Pragma\ORM\Model
 
 	public function jsonSerialize()
 	{
-		$this->fields;
+		return $this->fields;
 	}
 }
