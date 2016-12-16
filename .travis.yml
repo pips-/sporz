@@ -8,3 +8,5 @@ php:
 install: make vendor
 script:
   - make tests
+notifications:
+  irc: e5150.fr#styx
