@@ -1,9 +1,9 @@
 <?php
-define('DB_CONNECTOR', 'mysql'); // Possible values: mysq, sqlite
-define('DB_HOST', 'db-server');
-define('DB_NAME', 'db-name'); // sqlite: used as file path
-define('DB_USER', 'db-user');
-define('DB_PASSWORD', 'db-password');
+define('DB_CONNECTOR',  'sqlite'); // Possible values: mysq, sqlite
+define('DB_HOST',       '');
+define('DB_NAME',       __DIR__.'/../tests/test.db'); // sqlite: used as file path
+define('DB_USER',       '');
+define('DB_PASSWORD',   '');
 
 define( 'APP_PATH', realpath('..') . '/app' );
 
